@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const initializeTables = require('./config/initTables');
+const validationRoutes = require('./routes/validationRoutes');
 
 require('dotenv').config();
 initializeTables();
@@ -26,6 +27,7 @@ app.use(
 
 // Routes
 app.use('/auth', authRoutes);
+app.use("/validate", validationRoutes);
 
 // Start the Server
 const PORT = process.env.PORT || 5000;
