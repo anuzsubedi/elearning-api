@@ -1,6 +1,17 @@
-PORT = 5000
-JWT_SECRET = your_secret_key
-DB_HOST = localhost
-DB_USER = root
-DB_PASSWORD = password
-DB_NAME = elearning
+require('dotenv').config();
+const mysql = require('mysql2');
+
+const db = mysql.createConnection({
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_NAME || "elearning_platform",
+    port: process.env.DB_PORT || 3306,
+});
+
+db.connect((err) => {
+    if (err) throw err;
+    console.log("MySQL Connected...");
+});
+
+module.exports = db;
