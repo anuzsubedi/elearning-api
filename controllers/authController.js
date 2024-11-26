@@ -19,16 +19,33 @@ exports.login = (req, res) => {
     const { email, password } = req.body;
     const sql = `SELECT * FROM users WHERE email = ?`;
     db.query(sql, [email], (err, result) => {
-        if (err || result.length === 0) return res.status(401).json({ message: 'Invalid email or password' });
+        if (err || result.length === 0) {
+            return res.status(401).json({ message: 'Invalid email or password' });
+        }
+
         const user = result[0];
         if (!bcrypt.compareSync(password, user.password)) {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
+
+        // Generate the token
         const token = jwt.generateToken(user.user_id);
+
+        // Send the token and user details
         res.cookie('token', token, { httpOnly: true });
-        res.status(200).json({ message: 'Login successful', token });
+        res.status(200).json({
+            message: 'Login successful',
+            token,
+            user: {
+                id: user.user_id,
+                full_name: user.full_name,
+                email: user.email
+            }
+        });
     });
 };
+
+
 
 exports.logout = (req, res) => {
     res.clearCookie('token');
