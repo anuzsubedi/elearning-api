@@ -18,6 +18,7 @@ exports.signup = (req, res) => {
 exports.login = (req, res) => {
     const { email, password } = req.body;
     const sql = `SELECT * FROM users WHERE email = ?`;
+
     db.query(sql, [email], (err, result) => {
         if (err || result.length === 0) {
             return res.status(401).json({ message: 'Invalid email or password' });
@@ -28,10 +29,13 @@ exports.login = (req, res) => {
             return res.status(401).json({ message: 'Invalid email or password' });
         }
 
-        // Generate the token
-        const token = jwt.generateToken(user.user_id);
+        // Include user_id and user_type in the JWT payload
+        const token = jwt.generateToken({
+            user_id: user.user_id,
+            user_type: user.user_type,
+        });
 
-        // Send the token and user details
+        // Set the token in cookies
         res.cookie('token', token, { httpOnly: true });
         res.status(200).json({
             message: 'Login successful',
@@ -40,8 +44,8 @@ exports.login = (req, res) => {
                 id: user.user_id,
                 full_name: user.full_name,
                 email: user.email,
-                user_type: user.user_type
-            }
+                user_type: user.user_type,
+            },
         });
     });
 };

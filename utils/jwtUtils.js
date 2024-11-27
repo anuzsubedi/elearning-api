@@ -1,10 +1,13 @@
 const jwt = require('jsonwebtoken');
-const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key';
 
-exports.generateToken = (userId) => {
-    return jwt.sign({ user_id: userId }, SECRET_KEY, { expiresIn: '1h' });
+const SECRET_KEY = process.env.JWT_SECRET || "your-secret-key";
+
+// Generate a token
+exports.generateToken = (payload) => {
+    return jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
 };
 
-exports.verifyToken = (token, callback) => {
-    jwt.verify(token, SECRET_KEY, callback);
+// Verify a token
+exports.verifyToken = (token) => {
+    return jwt.verify(token, SECRET_KEY);
 };

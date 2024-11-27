@@ -1,11 +1,16 @@
 const jwt = require('../utils/jwtUtils');
 
-exports.authenticateToken = (req, res, next) => {
+exports.verifyToken = (req, res, next) => {
     const token = req.cookies.token;
-    if (!token) return res.status(403).json({ message: 'Unauthorized' });
-    jwt.verifyToken(token, (err, user) => {
-        if (err) return res.status(403).json({ message: 'Unauthorized' });
-        req.user = user;
+    if (!token) {
+        return res.status(401).json({ message: "Unauthorized: No token provided." });
+    }
+
+    try {
+        const decoded = jwt.verifyToken(token);
+        req.user = decoded; // Attach user info to the request
         next();
-    });
+    } catch (err) {
+        return res.status(401).json({ message: "Unauthorized: Invalid token." });
+    }
 };
