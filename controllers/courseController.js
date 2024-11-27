@@ -2,20 +2,19 @@ const db = require('../config/db');
 
 // Create a new course
 exports.createCourse = (req, res) => {
-    console.log("User from token:", req.user); // Debugging
-
-    const { course_name, course_description, difficulty, difficulty_description, course_type, course_price } = req.body;
-    const user_id = req.user?.user_id; // Safely access `user_id`
+    const { course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id } = req.body;
+    const user_id = req.user?.user_id; // Extract `user_id` from token
 
     if (!user_id) {
         return res.status(400).json({ message: "User ID is missing in the token." });
     }
 
     const sql = `
-        INSERT INTO courses (user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, created_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+        INSERT INTO courses 
+        (user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, created_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
     `;
-    const values = [user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price];
+    const values = [user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id];
 
     db.query(sql, values, (err, result) => {
         if (err) {
@@ -26,10 +25,13 @@ exports.createCourse = (req, res) => {
     });
 };
 
-
 // Get all courses
 exports.getAllCourses = (req, res) => {
-    const sql = "SELECT * FROM courses";
+    const sql = `
+        SELECT courses.*, users.full_name AS instructor_name 
+        FROM courses
+        INNER JOIN users ON courses.user_id = users.user_id
+    `;
     db.query(sql, (err, results) => {
         if (err) {
             console.error("Error fetching courses:", err.message || err);
@@ -41,8 +43,13 @@ exports.getAllCourses = (req, res) => {
 
 // Get courses by user
 exports.getCoursesByUser = (req, res) => {
-    const user_id = req.user.user_id; // Ensure `req.user` is populated by `verifyToken`
-    const sql = "SELECT * FROM courses WHERE user_id = ?";
+    const user_id = req.user?.user_id; // Ensure `req.user` is populated by `verifyToken`
+    const sql = `
+        SELECT courses.*, users.full_name AS instructor_name 
+        FROM courses
+        INNER JOIN users ON courses.user_id = users.user_id
+        WHERE courses.user_id = ?
+    `;
     db.query(sql, [user_id], (err, results) => {
         if (err) {
             console.error("Error fetching user courses:", err.message || err);
