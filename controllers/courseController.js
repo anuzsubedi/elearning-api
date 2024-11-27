@@ -2,7 +2,7 @@ const db = require('../config/db');
 
 // Create a new course
 exports.createCourse = (req, res) => {
-    const { course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id } = req.body;
+    const { course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, CLOs } = req.body;
     const user_id = req.user?.user_id; // Extract `user_id` from token
 
     if (!user_id) {
@@ -11,10 +11,10 @@ exports.createCourse = (req, res) => {
 
     const sql = `
         INSERT INTO courses 
-        (user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, created_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        (user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, CLOs, created_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
     `;
-    const values = [user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id];
+    const values = [user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, CLOs];
 
     db.query(sql, values, (err, result) => {
         if (err) {

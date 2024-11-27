@@ -20,3 +20,18 @@ exports.uploadImage = (imageData, callback) => {
         callback(null, result.insertId); // Return the image ID
     });
 };
+
+try {
+    console.log("Image model")
+    exports.getImage = (image_id, callback) => {
+        const sql = `SELECT * FROM images WHERE image_id = ?`;
+        db.query(sql, [image_id], (err, results) => {
+            if (err) return callback(err);
+            if (results.length === 0) return callback({ message: "Image not found" });
+            callback(null, results[0]);
+        });
+    }
+}
+catch (err) {
+    console.log(err)
+}

@@ -8,4 +8,6 @@ const upload = multer({ dest: 'uploads/' }); // Temporary directory for uploads
 
 router.post('/upload', verifyToken, upload.single('image'), imageController.uploadImage); // Upload an image
 
+router.get('/get/:image_id', imageController.getImage);
+
 module.exports = router;
