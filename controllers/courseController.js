@@ -127,7 +127,7 @@ exports.editCourse = (req, res) => {
         course_id
     ];
 
-    console.log("Executing SQL:", sql, values);
+
 
     db.query(sql, values, (err, result) => {
         if (err) {
