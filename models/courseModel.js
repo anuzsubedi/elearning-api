@@ -14,6 +14,7 @@ exports.createCoursesTable = (callback) => {
             course_price DECIMAL(10, 2),
             image_id INT,
             CLOs JSON,
+            tags JSON,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
@@ -26,8 +27,8 @@ exports.createCoursesTable = (callback) => {
 exports.createCourse = (courseData, callback) => {
     const sql = `
         INSERT INTO courses 
-        (user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, CLOs, created_at) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
+        (user_id, course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, CLOs, tags, created_at) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())
     `;
     db.query(sql, courseData, callback);
 };
@@ -55,6 +56,3 @@ exports.deleteCourse = (course_id, callback) => {
     const sql = "DELETE FROM courses WHERE course_id = ?";
     db.query(sql, [course_id], callback);
 };
-
-
-
