@@ -41,6 +41,25 @@ exports.getAllCourses = (req, res) => {
     });
 };
 
+exports.getCourseById = (req, res) => {
+    const { course_id } = req.params;
+    const sql = `
+        SELECT * 
+        FROM courses
+        WHERE course_id = ?
+    `;
+    db.query(sql, [course_id], (err, result) => {
+        if (err) {
+            console.error("Error fetching course details:", err.message || err);
+            return res.status(500).json({ message: "Error fetching course details." });
+        }
+        if (result.length === 0) {
+            return res.status(404).json({ message: "Course not found." });
+        }
+        res.status(200).json(result[0]);
+    });
+};
+
 // Get courses by user
 exports.getCoursesByUser = (req, res) => {
     const user_id = req.user?.user_id; // Ensure `req.user` is populated by `verifyToken`
@@ -69,5 +88,55 @@ exports.deleteCourse = (req, res) => {
             return res.status(500).json({ message: "Error deleting course." });
         }
         res.status(200).json({ message: "Course deleted successfully." });
+    });
+};
+
+exports.editCourse = (req, res) => {
+    const { course_id } = req.params;
+    const { course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, CLOs, tags } = req.body;
+
+    // Convert JSON objects to strings
+    const CLOsString = JSON.stringify(CLOs);
+    const tagsString = JSON.stringify(tags);
+
+    const sql = `
+        UPDATE courses 
+        SET course_name = ?, 
+            course_description = ?, 
+            difficulty = ?, 
+            difficulty_description = ?, 
+            course_type = ?, 
+            course_price = ?, 
+            image_id = ?, 
+            CLOs = ?, 
+            tags = ?, 
+            updated_at = NOW()
+        WHERE course_id = ?
+    `;
+
+    const values = [
+        course_name,
+        course_description,
+        difficulty,
+        difficulty_description,
+        course_type,
+        course_price,
+        image_id,
+        CLOsString,
+        tagsString,
+        course_id
+    ];
+
+    console.log("Executing SQL:", sql, values);
+
+    db.query(sql, values, (err, result) => {
+        if (err) {
+            console.error("Error updating course:", err.message || err);
+            return res.status(500).json({ message: "Error updating course." });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Course not found." });
+        }
+        res.status(200).json({ message: "Course updated successfully." });
     });
 };

@@ -10,7 +10,7 @@ exports.createCoursesTable = (callback) => {
             course_description TEXT,
             difficulty ENUM('Beginner', 'Intermediate', 'Advanced') NOT NULL,
             difficulty_description TEXT,
-            course_type ENUM('Full Access', 'Limited Access') NOT NULL,
+            course_type ENUM('Full Access', 'Subscription') NOT NULL,
             course_price DECIMAL(10, 2),
             image_id INT,
             CLOs JSON,
@@ -56,3 +56,23 @@ exports.deleteCourse = (course_id, callback) => {
     const sql = "DELETE FROM courses WHERE course_id = ?";
     db.query(sql, [course_id], callback);
 };
+
+exports.editCourse = (course_id, courseData, callback) => {
+    const { course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, CLOs, tags } = courseData;
+    const sql = `
+        UPDATE courses 
+        SET course_name = ?, course_description = ?, difficulty = ?, difficulty_description = ?, course_type = ?, course_price = ?, image_id = ?, CLOs = ?, tags = ?, updated_at = NOW()
+        WHERE course_id = ?
+    `;
+    const values = [course_name, course_description, difficulty, difficulty_description, course_type, course_price, image_id, CLOs, tags, course_id];
+    db.query(sql, values, callback);
+};
+
+exports.getCourseById = (course_id, callback) => {
+    const sql = `
+        SELECT * 
+        FROM courses
+        WHERE course_id = ?
+    `;
+    db.query(sql, [course_id], callback);
+}
