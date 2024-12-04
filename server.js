@@ -7,6 +7,7 @@ const courseRoutes = require('./routes/courseRoutes'); // Added course routes
 const validationRoutes = require('./routes/validationRoutes');
 const imageRoutes = require('./routes/imageRoutes');
 const initializeTables = require('./config/initTables');
+const chapterRoutes = require('./routes/chapterRoutes');
 
 require('dotenv').config();
 
@@ -34,6 +35,7 @@ app.use('/auth', authRoutes);
 app.use('/courses', courseRoutes); // Added course routes
 app.use('/validate', validationRoutes);
 app.use('/image', imageRoutes);
+app.use('/chapters', chapterRoutes);
 
 // Default Route (Optional for basic health check)
 app.get('/', (req, res) => {
