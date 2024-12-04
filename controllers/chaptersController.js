@@ -2,13 +2,13 @@ const chaptersModel = require('../models/chaptersModel');
 
 // Create a new chapter
 exports.createChapter = (req, res) => {
-    const { course_id, chapter_title, chapter_content, order_number } = req.body;
+    const { course_id, chapter_title, chapter_content, chapter_description, order_number, type } = req.body;
 
-    if (!course_id || !chapter_title || !order_number) {
+    if (!course_id || !chapter_title || !order_number || !type) {
         return res.status(400).json({ message: "Required fields are missing." });
     }
 
-    const chapterData = [course_id, chapter_title, chapter_content || '', order_number];
+    const chapterData = [course_id, chapter_title, chapter_content || '', chapter_description || '', order_number, type];
 
     chaptersModel.createChapter(chapterData, (err, result) => {
         if (err) {
@@ -32,11 +32,11 @@ exports.getChaptersByCourse = (req, res) => {
             console.error("Error fetching chapters:", err.message || err);
             return res.status(500).json({ message: "Failed to fetch chapters." });
         }
-        res.status(200).json({ chapters: results });
+        res.status(200).json(results);
     });
 };
 
-// Get a single chapter
+// Get a single chapter by ID
 exports.getChapterById = (req, res) => {
     const { chapter_id } = req.params;
 
@@ -45,23 +45,20 @@ exports.getChapterById = (req, res) => {
             console.error("Error fetching chapter:", err.message || err);
             return res.status(500).json({ message: "Failed to fetch chapter." });
         }
-        if (!result.length) {
-            return res.status(404).json({ message: "Chapter not found." });
-        }
-        res.status(200).json(result[0]);
+        res.status(200).json(result);
     });
 };
 
 // Update a chapter
 exports.updateChapter = (req, res) => {
     const { chapter_id } = req.params;
-    const { chapter_title, chapter_content, order_number } = req.body;
+    const { chapter_title, chapter_content, chapter_description, order_number, type } = req.body;
 
-    if (!chapter_title || !order_number) {
+    if (!chapter_title || !order_number || !type) {
         return res.status(400).json({ message: "Required fields are missing." });
     }
 
-    const chapterData = [chapter_title, chapter_content || '', order_number];
+    const chapterData = [chapter_title, chapter_content || '', chapter_description || '', order_number, type];
 
     chaptersModel.updateChapter(chapter_id, chapterData, (err, result) => {
         if (err) {
@@ -76,7 +73,7 @@ exports.updateChapter = (req, res) => {
 exports.deleteChapter = (req, res) => {
     const { chapter_id } = req.params;
 
-    chaptersModel.deleteChapter(chapter_id, (err) => {
+    chaptersModel.deleteChapter(chapter_id, (err, result) => {
         if (err) {
             console.error("Error deleting chapter:", err.message || err);
             return res.status(500).json({ message: "Failed to delete chapter." });

@@ -8,7 +8,9 @@ exports.createChaptersTable = (callback) => {
             course_id INT NOT NULL,
             chapter_title VARCHAR(255) NOT NULL,
             chapter_content TEXT,
+            chapter_description TEXT,
             order_number INT NOT NULL,
+            type VARCHAR(50) NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
             updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             FOREIGN KEY (course_id) REFERENCES courses(course_id) ON DELETE CASCADE
@@ -20,8 +22,8 @@ exports.createChaptersTable = (callback) => {
 // Create a new chapter
 exports.createChapter = (chapterData, callback) => {
     const sql = `
-        INSERT INTO chapters (course_id, chapter_title, chapter_content, order_number)
-        VALUES (?, ?, ?, ?)
+        INSERT INTO chapters (course_id, chapter_title, chapter_content, chapter_description, order_number, type)
+        VALUES (?, ?, ?, ?, ?, ?)
     `;
     db.query(sql, chapterData, callback);
 };
@@ -46,7 +48,7 @@ exports.getChapterById = (chapterId, callback) => {
 exports.updateChapter = (chapterId, chapterData, callback) => {
     const sql = `
         UPDATE chapters
-        SET chapter_title = ?, chapter_content = ?, order_number = ?, updated_at = NOW()
+        SET chapter_title = ?, chapter_content = ?, chapter_description = ?, order_number = ?, type = ?, updated_at = NOW()
         WHERE chapter_id = ?
     `;
     db.query(sql, [...chapterData, chapterId], callback);
