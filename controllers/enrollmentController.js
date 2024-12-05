@@ -1,6 +1,6 @@
 const db = require('../config/db');
 
-// Enroll a user in a course
+
 // Enroll a user in a course
 exports.enrollUser = (req, res) => {
     const { course_id, amount_paid } = req.body;
