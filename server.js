@@ -8,6 +8,8 @@ const validationRoutes = require('./routes/validationRoutes');
 const imageRoutes = require('./routes/imageRoutes');
 const initializeTables = require('./config/initTables');
 const chapterRoutes = require('./routes/chapterRoutes');
+const enrollmentRoutes = require('./routes/enrolmentRoutes');
+const studentCourseRoutes = require('./routes/studentCourseRoutes');
 
 require('dotenv').config();
 
@@ -36,6 +38,8 @@ app.use('/courses', courseRoutes); // Added course routes
 app.use('/validate', validationRoutes);
 app.use('/image', imageRoutes);
 app.use('/chapters', chapterRoutes);
+app.use('/enrollments', enrollmentRoutes);
+app.use('/student-courses', studentCourseRoutes);
 
 // Default Route (Optional for basic health check)
 app.get('/', (req, res) => {

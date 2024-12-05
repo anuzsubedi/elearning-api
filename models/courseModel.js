@@ -70,9 +70,11 @@ exports.editCourse = (course_id, courseData, callback) => {
 
 exports.getCourseById = (course_id, callback) => {
     const sql = `
-        SELECT * 
+        SELECT courses.*, users.full_name AS instructor_name, 
+               (SELECT COUNT(*) FROM chapters WHERE chapters.course_id = courses.course_id) AS chapter_number
         FROM courses
-        WHERE course_id = ?
+        INNER JOIN users ON courses.user_id = users.user_id
+        WHERE courses.course_id = ?
     `;
     db.query(sql, [course_id], callback);
-}
+};

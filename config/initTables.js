@@ -2,6 +2,7 @@ const { createUsersTable } = require('../models/userModel');
 const { createCoursesTable } = require('../models/courseModel');
 const { createImagesTable } = require('../models/imageModel');
 const { createChaptersTable } = require('../models/chaptersModel');
+const { createEnrollmentsTable } = require('../models/enrolmentMode');
 
 const initializeTables = () => {
     createUsersTable((err) => {
@@ -22,6 +23,11 @@ const initializeTables = () => {
     createChaptersTable((err) => {
         if (err) console.error("Error creating 'chapters' table:", err.message);
         else console.log("'chapters' table is ready.");
+    });
+
+    createEnrollmentsTable((err) => {
+        if (err) console.error("Error creating 'enrollments' table:", err.message);
+        else console.log("'enrollments' table is ready.");
     });
 };
 

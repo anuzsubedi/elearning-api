@@ -44,9 +44,11 @@ exports.getAllCourses = (req, res) => {
 exports.getCourseById = (req, res) => {
     const { course_id } = req.params;
     const sql = `
-        SELECT * 
+        SELECT courses.*, users.full_name AS instructor_name, 
+               (SELECT COUNT(*) FROM chapters WHERE chapters.course_id = courses.course_id) AS chapter_number
         FROM courses
-        WHERE course_id = ?
+        INNER JOIN users ON courses.user_id = users.user_id
+        WHERE courses.course_id = ?
     `;
     db.query(sql, [course_id], (err, result) => {
         if (err) {
@@ -129,6 +131,7 @@ exports.editCourse = (req, res) => {
 
 
 
+
     db.query(sql, values, (err, result) => {
         if (err) {
             console.error("Error updating course:", err.message || err);
@@ -140,3 +143,5 @@ exports.editCourse = (req, res) => {
         res.status(200).json({ message: "Course updated successfully." });
     });
 };
+
+
